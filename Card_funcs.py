@@ -1,6 +1,5 @@
 import Card_class as Card
 import random
-import os
 def create_deck():
     cards = []
     for color in Card.Card.Color:
@@ -36,7 +35,6 @@ def draw(deck, player):
         player.aces -= 1
 
 def show_cards(dealer, player):
-    os.system('cls' if os.name == 'nt' else 'clear')
     print("Dealer\'s hand:")
     for c in dealer.hand:
         c.display()
