@@ -1,4 +1,4 @@
-import Card_funcs as funcs
+import Card_funcs as Funcs
 import os
 import msvcrt
 import time
@@ -37,72 +37,92 @@ while not end_game:
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')
         print(f"Bet 0 to quit\nMoney: {bank}\nBet: ", end = '')
-        bet = int(input())
-        if 0 < bet <= bank:
-            break
-        elif bet > bank:
-            bet = bank
-            break
-        elif bet == 0:
-            end_game = True
-            end_round = True
+        try:
+            bet = int(input())
+        except ValueError:
+            print("Please enter a number")
+            time.sleep(1.5)
+        else:
+            if 0 < bet <= bank:
+                break
+            elif bet > bank:
+                bet = bank
+                break
+            elif bet == 0:
+                end_game = True
+                end_round = True
+                break
     os.system('cls' if os.name == 'nt' else 'clear')
 
+    # CHECK IF THE USER WANTS TO QUIT
+    if end_game:
+        break
+
     # PREPARE DECKS
-    cards = funcs.create_deck()
-    funcs.shuffle_cards(cards)
+    cards = Funcs.create_deck()
+    Funcs.shuffle_cards(cards)
 
     # START DRAWING
-    funcs.draw(cards, dealer)
+    Funcs.draw(cards, dealer)
     # CHECK IF DEALER GOT BLACKJACK
     if dealer.total >= 10:
         old_dealer_total = dealer.total
-        funcs.draw(cards, dealer)
+        Funcs.draw(cards, dealer)
         if dealer.total == 21:
             end_round = True
         else:
             dealer.hand.pop(-1)
             dealer.total = old_dealer_total
 
-    funcs.draw(cards, player)
-    funcs.draw(cards, player)
+    Funcs.draw(cards, player)
+    Funcs.draw(cards, player)
 
     while not end_round:
         # CHECK IF REACHED END OF DECK
         if len(cards) == 0:
-            cards = funcs.create_deck()
-            funcs.shuffle_cards(cards)
+            cards = Funcs.create_deck()
+            Funcs.shuffle_cards(cards)
 
         # BEGIN ROUND
         os.system('cls' if os.name == 'nt' else 'clear')
         print(f"Money: {bank}\nBet: {bet}")
-        funcs.show_cards(dealer, player)
-        print("\nHit [F] Stand [H] Quit [Q]")
+        Funcs.show_cards(dealer, player)
+        print("\nHit [F] | Stand [G] | Double Down [H] | SURRENDER [Q] | Instructions [I]")
         while True:
             getch = msvcrt.getwch()
             time.sleep(0.1)
             match getch:
                 case 'f' | 'F':     # HIT
-                    funcs.draw(cards, player)
+                    Funcs.draw(cards, player)
                     break
-                case 'h' | 'H':     # STAND
+                case 'g' | 'G':     # STAND
                     end_round = True
                     break
-                case 'q' | 'Q':     # QUIT - AUTO LOSE
+                case 'h' | 'H':     # DOUBLE DOWN
+                    bet *= 2
+                    Funcs.draw(cards, player)
+                    end_round = True
+                    break
+                case 'q' | 'Q':     # SURRENDER - AUTO LOSE
                     player.total = 22
+                    bet = int(bet/2)
                     end_round = True
-                    end_game = True
+                    break
+                case 'i' | 'I':     # INSTRUCTIONS
+                    os.system('cls' if os.name == 'nt' else 'clear')
+                    Funcs.instructions()
+                    getch = msvcrt.getwch()
                     break
         if player.total > 21:
             end_round = True
 
     # PLAYER'S TURN ENDS - DEALER DRAWS
     while dealer.total < 17:
-        funcs.draw(cards, dealer)
+        Funcs.draw(cards, dealer)
 
     os.system('cls' if os.name == 'nt' else 'clear')
     print(f"Money: {bank}\nBet: {bet}")
-    funcs.show_cards(dealer, player)
+    Funcs.show_cards(dealer, player)
 
     # WIN CONDITIONS
     if player.total > 21:

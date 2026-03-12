@@ -43,3 +43,9 @@ def show_cards(dealer, player):
     for c in player.hand:
         c.display()
     print(f"\n\t{player.total}")
+
+def instructions():
+    print("Hit [F]: Draw another card. You get a blackjack when your sum will be equal to 21, however when it is greater than 21 you automatically lose")
+    print("Stand [G]: Stop drawing cards. End your turn.")
+    print("Double Down [H]: Double your bet and draw one more card. You stop drawing after doing this action.")
+    print("Surrender [Q]: Give up on this game. Halve your original bet.")
